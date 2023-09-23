@@ -29,7 +29,9 @@ class CalculatorViewModel : ViewModel() {
                     text = action.symbol
                 )
             )
-        } else if (state.operations.size == state.numbers.size) {
+        } else if (state.operations.size == state.numbers.size
+            && state.operations.isNotEmpty()
+        ) {
             state = state.copy(
                 operations = state.operations.dropLast(1) + ButtonContent(
                     text = action.symbol
@@ -95,7 +97,7 @@ class CalculatorViewModel : ViewModel() {
     }
 
     private fun performCalculation() {
-        var tmpNumbers = state.numbers
+        val tmpNumbers = state.numbers
             .map { it.joinToString("") { el -> el.text } }
             .map { it.toDouble() }
             .toMutableList()
@@ -133,6 +135,7 @@ class CalculatorViewModel : ViewModel() {
         val resChars = roundedRes.toString()
             .replace("\\.0+".toRegex(), "")
             .split("")
+            .filter { it.isNotBlank() }
         state = CalculatorState(
             numbers = listOf(resChars.map {
                 ButtonContent(
